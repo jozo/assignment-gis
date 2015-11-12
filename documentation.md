@@ -47,7 +47,7 @@ Hotel data is coming directly from Open Street Maps. I downloaded an extent cove
 
 ### Response
 
-API calls return json responses with 2 top-level keys, `hotels` and `geojson`. `hotels` contains an array of hotel data, one entry per matched hotel. Hotel attributes are (mostly self-evident):
+API calls return json responses with 2 top-level keys, `hotels` and `geojson`. `hotels` contains an array of hotel data for the sidebar, one entry per matched hotel. Hotel attributes are (mostly self-evident):
 ```
 {
   "name": "Modra hviezda",
