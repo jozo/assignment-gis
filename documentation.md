@@ -16,6 +16,8 @@ This application shows hotels in Bratislava on a map. Most important features ar
 
 This is it in action:
 
+![Screenshot](screenshot.png)
+
 The application has 2 separate parts, the client which is a [frontend web application](#frontend) using mapbox API and mapbox.js and the [backend application](#backend) written in [Rails](http://rubyonrails.org/), backed by PostGIS. The frontend application communicates with backend using a [REST API](#api).
 
 # Frontend
