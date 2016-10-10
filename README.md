@@ -14,6 +14,7 @@ Build a map-based application, which lets the user see geo-based data on a map a
 
 ## Data sources
 
+
 - [Open Street Maps](https://www.openstreetmap.org/)
 
 ## My project
