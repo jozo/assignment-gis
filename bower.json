@@ -1,0 +1,25 @@
+{
+  "name": "parking_tea",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "blowfishtea <blowfishtea@protonmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/blowfishtea/assignment-gis",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  },
+  "overrides": {
+    "jquery": {
+      "ignore": true
+    }
+  }
+}
