@@ -8,13 +8,10 @@ $(document).ready(function () {
         hash: false
     });
 
-    $("#hide-right").on('click', function () {
-        $("#right-menu").animate({width: 'toggle'}, 350);
-    });
-
-    $("#toggle-top-menu").on('click', function () {
-        // $("#menu-top").animate({width: 'toggle'}, 350);
-        $("#menu-top").slideToggle(350);
+    $(".toggle-left-menu").on('click', function () {
+        $("#menu-left").toggle();
+        // $("#menu-left").animate({width: 'toggle'}, 350);
+        // $("#menu-left").slideToggle(350);
     });
 
     $("#show-parking").on('click', function () {

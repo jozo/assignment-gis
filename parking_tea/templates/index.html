@@ -2,10 +2,16 @@
 <html>
 <head>
   <title>Hello world</title>
+  {# Blace CSS #}
   <link rel="stylesheet" href="https://unpkg.com/blaze">
+  {# jQuery #}
   <script src='https://unpkg.com/jquery@3'></script>
+  {# Mabobox #}
   <script src='https://api.mapbox.com/mapbox-gl-js/v0.25.1/mapbox-gl.js'></script>
   <link href='https://api.mapbox.com/mapbox-gl-js/v0.25.1/mapbox-gl.css' rel='stylesheet'/>
+  {# Font Awesome #}
+  <script src="https://use.fontawesome.com/5f81f787a7.js"></script>
+  {# Custom #}
   <link rel="stylesheet" href="static/bundle.min.css">
   <script src="static/bundle.min.js"></script>
 </head>
@@ -13,17 +19,29 @@
 
 <div id='map'></div>
 
-<div id="menu">
-  <a href="#" id="toggle-top-menu">Menu</a>
-</div>
 
-<div id="menu-top">
-  <a href="#" id="hide-right">Hide right</a>
-  <button class="c-button c-button--info" id="show-parking">Show parking</button>
-</div>
+<div class="menu">
+  <div class="menu-left" id="menu-left">
+    <div class="menu-left__content">
+      <div class="logo">
+        <a href="/">
+          <img src="static/img/tea.svg" alt="Cup of tea" class="logo__icon">
+          <h1 class="logo__title">Parking tea</h1>
+        </a>
+      </div>
+      <button class="btn--icon menu-left__hide-btn toggle-left-menu">
+        <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+      </button>
 
-<div id="right-menu">
-  Popis parkoviska
+      <a href="#">Menu</a>
+    </div>
+  </div>
+
+  <div class="menu-icon u-center-block">
+    <button class="btn--icon u-center-block__content toggle-left-menu">
+      <i class="fa fa-bars" aria-hidden="true"></i>
+    </button>
+  </div>
 </div>
 
 </body>

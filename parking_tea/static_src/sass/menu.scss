@@ -1,0 +1,25 @@
+@import "variables";
+
+.menu { position: absolute; left: 0; top: 0; height: 100%; }
+
+.menu-left { width: 300px; height: 100%; float: left; z-index: $z-medium; padding: 5px; background: $c-bg; overflow: hidden;
+  &__content { position: relative; }
+  &__hide-btn { position: absolute; top: 12px; right: 10px; }
+}
+
+.menu-icon { width: 40px; height: 40px; margin: 10px; float: right; background: $c-bg; }
+
+.logo { margin-right: 40px;
+  a { text-decoration: none; }
+  &__icon { width: 40px; height: 40px; margin-right: 5px; float: left; }
+  &__title { margin: 0 0 20px 0; padding-top: 4px; color: $c-primary; font-size: 33px; font-weight: bold; }
+}
+
+#menu-top {
+  left: 10px;
+  top: 10px;
+  position: absolute;
+  z-index: 1;
+  background: white;
+  padding-top: 20px;
+}
