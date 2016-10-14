@@ -18,3 +18,5 @@ html, body {
     &:hover { opacity: 0.8; }
   }
 }
+
+#info-alert { position: absolute; z-index: $z-top; }
