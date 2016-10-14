@@ -15,6 +15,10 @@ $(document).ready(function () {
 
     map.on('load', function () {
         map.getCanvas().style.cursor = 'crosshair';
+        // disable map rotation using right click + drag
+        map.dragRotate.disable();
+        // disable map rotation using touch rotation gesture
+        map.touchZoomRotate.disableRotation();
 
         map.addSource('geojson', {
             "type": "geojson",

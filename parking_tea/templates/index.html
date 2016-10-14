@@ -1,12 +1,12 @@
 <!doctype html>
 <html>
 <head>
-  <title>Hello world</title>
+  <title>Parking tea</title>
   {# Blace CSS #}
   <link rel="stylesheet" href="https://unpkg.com/blaze">
   {# jQuery #}
   <script src='https://unpkg.com/jquery@3'></script>
-  {# Mabobox #}
+  {# Mabbox #}
   <script src='https://api.mapbox.com/mapbox-gl-js/v0.25.1/mapbox-gl.js'></script>
   <link href='https://api.mapbox.com/mapbox-gl-js/v0.25.1/mapbox-gl.css' rel='stylesheet'/>
   {# Toastr #}
@@ -17,19 +17,11 @@
   {# Custom #}
   <link rel="stylesheet" href="static/bundle.min.css">
   <script src="static/bundle.min.js"></script>
+  <link rel="icon" href="static/img/favicon.png">
 </head>
 <body>
 
 <div id='map'></div>
-
-{#<div id="info-alert" class="u-center-block">#}
-{#  <div class="o-container--small u-center-block__content u-center-block__content--horizontal">#}
-{#    <div class="c-alert c-alert--info">#}
-{#      <button class="c-button c-button--close">×</button>#}
-{#      Click on the map to show parkings#}
-{#    </div>#}
-{#  </div>#}
-{#</div>#}
 
 <div class="menu">
   <div class="menu-left" id="menu-left">
@@ -49,10 +41,63 @@
           <div class="c-tab-heading c-tab-heading--active">Park</div>
           <div class="c-tab-heading">Park & ride</div>
         </div>
-        <div class="c-tabs__tab c-tabs__tab--active">This is tab one</div>
-        <div class="c-tabs__tab">This is tab two</div>
+        <div class="c-tabs__tab c-tabs__tab--active">
+          <div class="o-grid">
+            <div class="o-grid__cell">
+              <form action="">
+                <fieldset class="o-fieldset">
+                  <div class="o-form-element">
+                    <label class="c-label" for="area_size">Size of the area for search</label>
+                    <input type="number" id="area_size" placeholder="Size in km" class="c-field" value="5" min="1">
+                    <div class="c-hint">Minimum size is 1 km.</div>
+                  </div>
+                  <div class="o-form-element">
+                    <label class="c-label" for="minimal_capacity">Minimal capacity</label>
+                    <input type="number" id="minimal_capacity" placeholder="e.g. 15" class="c-field" min="1">
+                    <div class="c-hint">Leave empty for unlimited.</div>
+                  </div>
+                  <div class="o-form-element">
+                    <label class="c-toggle c-toggle--warning">
+                      <input type="checkbox">
+                      <div class="c-toggle__track">
+                        <div class="c-toggle__handle"></div>
+                      </div>
+                      Only free parking
+                    </label>
+                  </div>
+                  <div class="o-form-element u-center-block">
+                    <button class="c-button c-button--info u-center-block__content u-center-block__content--horizontal">
+                      Apply filter
+                    </button>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="c-tabs__tab">
+          <form action="">
+            <fieldset class="o-fieldset">
+              <div class="o-form-element">
+                <label class="c-label" for="no_parking_size">No parking area size</label>
+                <input type="number" id="no_parking_size" placeholder="Size in km" class="c-field" value="4" min="1">
+                <div class="c-hint">Minimum size is 1 km.</div>
+              </div>
+              <div class="o-form-element u-center-block">
+                <button class="c-button c-button--info u-center-block__content u-center-block__content--horizontal">
+                  Show park & ride
+                </button>
+              </div>
+            </fieldset>
+          </form>
+        </div>
       </div>
     </div>
+
+    <footer id="credits">
+      <span class="c-badge c-tooltip c-tooltip--top" aria-label="Current version of the Parking tea">v1.0.0</span>
+      <a href="https://github.com/blowfishtea/assignment-gis" target="_blank" class="c-text c-text-warning">Sources</a>
+    </footer>
   </div>
 
   <div class="menu-icon u-center-block">

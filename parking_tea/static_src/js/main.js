@@ -3,6 +3,15 @@ $(document).ready(function () {
         $("#menu-left").toggle();
     });
 
+    // Tabs
+    $(".c-tab-heading").click(function () {
+        $(this).siblings().removeClass("c-tab-heading--active");
+        $(this).addClass("c-tab-heading--active");
+        var tabs = $(this).closest(".c-tabs").find(".c-tabs__tab");
+        tabs.removeClass("c-tabs__tab--active");
+        $(tabs[$(this).index()]).addClass("c-tabs__tab--active");
+    });
+
     toastr.options = {
         "closeButton": true,
         "debug": false,

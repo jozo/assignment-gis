@@ -15,11 +15,4 @@
   &__title { margin: 0 0 20px 0; padding-top: 4px; color: $c-primary; font-size: 33px; font-weight: bold; }
 }
 
-#menu-top {
-  left: 10px;
-  top: 10px;
-  position: absolute;
-  z-index: 1;
-  background: white;
-  padding-top: 20px;
-}
+#credits { position: absolute; bottom: 10px; left: 100px; }
