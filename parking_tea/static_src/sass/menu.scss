@@ -2,7 +2,8 @@
 
 .menu { position: absolute; left: 0; top: 0; height: 100%; }
 
-.menu-left { width: 300px; height: 100%; float: left; z-index: $z-medium; padding: 5px; background: $c-bg; overflow: hidden;
+.menu-left { width: 300px; height: 100%; float: left; z-index: $z-medium; padding: 5px; background: $c-bg;
+             overflow: hidden; box-shadow: 0 0 15px 0 rgba(0,0,0,0.75);
   &__content { position: relative; }
   &__hide-btn { position: absolute; top: 12px; right: 10px; }
 }
