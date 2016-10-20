@@ -17,9 +17,24 @@ def build_parking_query(lat, lng, args):
                            fee=fee, capacity=capacity)
 
 
+def build_park_and_ride_query(lat, lng, args):
+    no_go = int(args['filter_no_go_area'])
+    return render_template('park_and_ride.sql.j2', latitude=lat, longitude=lng, no_go_area=no_go)
+
+
 @app.route('/api/v1/parking/<float:lng>/<float:lat>/')
 def parking(lng, lat):
     query = build_parking_query(lat, lng, request.args)
+    con = connect(database='gis', host='localhost:65432', user='docker', password='docker')
+    cursor = con.cursor()
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    return json.dumps(rows)
+
+
+@app.route('/api/v1/park_and_ride/<float:lng>/<float:lat>/')
+def park_and_ride(lng, lat):
+    query = build_park_and_ride_query(lat, lng, request.args)
     con = connect(database='gis', host='localhost:65432', user='docker', password='docker')
     cursor = con.cursor()
     cursor.execute(query)

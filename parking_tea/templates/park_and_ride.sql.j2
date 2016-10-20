@@ -1,0 +1,30 @@
+WITH other_stops AS (
+	WITH near_stop AS (
+		select name from osm_point
+		where public_transport = 'stop_position'
+		and operator = 'DPB'
+		order by st_distance(
+			  st_transform(ST_GeomFromText('POINT({{ longitude }} {{ latitude }})', 4326), 3857),
+			  st_transform(way, 3857))
+		limit 1
+	)
+	select distinct on (mhd.target) mhd.target, osm_point.way from mhd
+	join near_stop on mhd.start = near_stop.name
+	join osm_point on mhd.target = osm_point.name
+		and public_transport = 'stop_position'
+		and operator = 'DPB'
+)
+select distinct on (st_distance, osm_id)
+  pol.tags,
+  st_asgeojson(st_transform(st_centroid(pol.way), 4326)),
+  st_distance(
+	  st_transform(ST_GeomFromText('POINT({{ longitude }} {{ latitude }})', 4326), 3857),
+	  st_transform(st_centroid(pol.way), 3857))
+from osm_polygon pol
+join other_stops on ST_DWithin(pol.way, other_stops.way, 500)
+where pol.amenity = 'parking'
+and {{ no_go_area }} < st_distance(
+	st_transform(ST_GeomFromText('POINT({{ longitude }} {{ latitude }})', 4326), 3857),
+	st_transform(st_centroid(pol.way), 3857))
+order by st_distance
+limit 50

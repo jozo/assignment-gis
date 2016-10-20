@@ -34,3 +34,4 @@ WHERE amenity = 'parking'
       AND p.tags->'fee' = 'no'
       {% endif %}
 {% endif %}
+order by st_distance

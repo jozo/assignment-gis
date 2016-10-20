@@ -18,6 +18,8 @@ $(document).ready(function () {
         })
     }).addTo(map);
 
+    var noGoAreaCircle = L.circle([48.1555, 17.1066], 0).addTo(map);
+
     map.on('click', function (e) {
         markerTarget.setLatLng(e.latlng);
         parking_layer.setGeoJSON([]);
@@ -42,6 +44,7 @@ $(document).ready(function () {
         toastr["info"]("Area size: " + filter_area_size + ", capacity: " + filter_min_capacity
                         + ", only free: " + filter_only_free);
         $('#loading-icon').css('visibility', 'visible');
+        noGoAreaCircle.setRadius(0);
 
         var data = {
             filter_area_size: filter_area_size,
@@ -62,6 +65,7 @@ $(document).ready(function () {
     var filter_area_size = $("#filter_area_size").val();            // metres
     var filter_min_capacity = $("#filter_min_capacity").val();      // unlimited
     var filter_only_free = $("#filter_only_free").is(':checked');
+    var filter_no_go_area = $("#filter_no_go_area").val();          // metres
 
     $("#apply-filter").on('click', function (e) {
         e.preventDefault();
@@ -69,5 +73,27 @@ $(document).ready(function () {
         filter_min_capacity = $("#filter_min_capacity").val();
         filter_only_free = $("#filter_only_free").is(':checked');
         find_parking(markerTarget.getLatLng());
+    });
+
+    function find_park_and_ride(latlng) {
+        $('#loading-icon').css('visibility', 'visible');
+        noGoAreaCircle.setLatLng(latlng);
+        noGoAreaCircle.setRadius(filter_no_go_area);
+        var data = { filter_no_go_area: filter_no_go_area };
+
+        $.getJSON("/api/v1/park_and_ride/" + latlng.lng + "/" + latlng.lat + "/", data, function (result) {
+            parking_geojson = [];
+            $.each(result, function (index, value) {
+                parking_geojson.push(createMarkerFrom(value, index + 1))
+            });
+            parking_layer.setGeoJSON(parking_geojson);
+            $('#loading-icon').css('visibility', 'hidden');
+        })
+    }
+
+    $("#park-and-ride").on('click', function (e) {
+        e.preventDefault();
+        filter_no_go_area = $("#filter_no_go_area").val();
+        find_park_and_ride(markerTarget.getLatLng());
     });
 });
