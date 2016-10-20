@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    // Map initialization
     L.mapbox.accessToken = 'pk.eyJ1IjoiYmxvd2Zpc2h0ZWEiLCJhIjoiY2l1NXd4ejhxMDAxbzJvczRpY283NjE0NiJ9.9Ozoh5tAqRJPZUpjUFhfYw';
     var map = L.mapbox.map('map', 'mapbox.streets').setView([48.1555, 17.1066], 15);
 
@@ -17,6 +18,13 @@ $(document).ready(function () {
         })
     }).addTo(map);
 
+    map.on('click', function (e) {
+        markerTarget.setLatLng(e.latlng);
+        parking_layer.setGeoJSON([]);
+        map.panTo(e.latlng);
+        find_parking(e.latlng)
+    });
+
     function createMarkerFrom(result, number) {
         return {
             type: 'Feature',
@@ -30,25 +38,33 @@ $(document).ready(function () {
         }
     }
 
-    map.on('click', function (e) {
-        markerTarget.setLatLng(e.latlng);
-        parking_layer.setGeoJSON([]);
-        map.panTo(e.latlng);
-        $.getJSON("/api/v1/parking/" + e.latlng.lng + "/" + e.latlng.lat + "/", function (result) {
+    function find_parking(latlng) {
+        toastr["info"]("Area size: " + filter_area_size + ", capacity: " + filter_min_capacity
+                        + ", only free: " + filter_only_free);
+        var data = {
+            filter_area_size: filter_area_size,
+            filter_min_capacity: filter_min_capacity,
+            filter_only_free: filter_only_free
+        };
+        $.getJSON("/api/v1/parking/" + latlng.lng + "/" + latlng.lat + "/", data, function (result) {
             parking_geojson = [];
             $.each(result, function (index, value) {
-                parking_geojson.push(createMarkerFrom(value, index+1))
+                parking_geojson.push(createMarkerFrom(value, index + 1))
             });
             parking_layer.setGeoJSON(parking_geojson);
-            toastr["info"]("Using default 5km area");
         })
-    });
+    }
 
-    $("#show-parking").on('click', function () {
-        var center = map.getCenter();
-        $.getJSON("/api/v1/" + center.lng + "/" + center.lat + "/", function (result) {
-            console.log(result);
-            toastr["info"]("Using default 5km area");
-        })
+    // Default filter
+    var filter_area_size = 1000;        // metres
+    var filter_min_capacity = 0;        // unlimited
+    var filter_only_free = false;
+
+    $("#apply-filter").on('click', function (e) {
+        e.preventDefault();
+        filter_area_size = $("#filter_area_size").val();
+        filter_min_capacity = $("#filter_min_capacity").val();
+        filter_only_free = $("#filter_only_free").is(':checked');
+        find_parking(markerTarget.getLatLng());
     });
 });

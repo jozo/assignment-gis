@@ -41,18 +41,3 @@ Use cases
 3. User chooses "Apply"
 4. System finds nearest bus stop to the selected point
 5. System finds parking that are outside the "no go" area and have correct bus stop near it. Correct bus stop is one with at least one mutual bus number as the target bus stop.
-
-SQL queries
------------
-### Nearest parking ###
-```sql
-select 
-  p.name,
-  p.tags,
-  st_asgeojson(p.geom),
-  st_distance(
-    ST_GeomFromText('POINT(17.1066 48.1555)', 3857),
-    st_transform(p.geom, 3857))
-from point p 
-where amenity='parking' order by st_distance limit 10
-```

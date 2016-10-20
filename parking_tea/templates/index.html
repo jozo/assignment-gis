@@ -45,21 +45,23 @@
         <div class="c-tabs__tab c-tabs__tab--active">
           <div class="o-grid">
             <div class="o-grid__cell">
-              <form action="">
+              <form>
                 <fieldset class="o-fieldset">
                   <div class="o-form-element">
                     <label class="c-label" for="area_size">Size of the area for search</label>
-                    <input type="number" id="area_size" placeholder="Size in km" class="c-field" value="5" min="1">
-                    <div class="c-hint">Minimum size is 1 km.</div>
+                    <input type="number" id="filter_area_size" placeholder="Size in metres" class="c-field"
+                           value="500" min="100" max="5000" step="100">
+                    <div class="c-hint">Minimum size is 100m.</div>
                   </div>
                   <div class="o-form-element">
                     <label class="c-label" for="minimal_capacity">Minimal capacity</label>
-                    <input type="number" id="minimal_capacity" placeholder="e.g. 15" class="c-field" min="1">
-                    <div class="c-hint">Leave empty for unlimited.</div>
+                    <input type="number" id="filter_min_capacity" placeholder="e.g. 15" class="c-field"
+                           value="0" min="0">
+                    <div class="c-hint">Leave empty or zero for unlimited.</div>
                   </div>
                   <div class="o-form-element">
                     <label class="c-toggle c-toggle--warning">
-                      <input type="checkbox">
+                      <input type="checkbox" id="filter_only_free">
                       <div class="c-toggle__track">
                         <div class="c-toggle__handle"></div>
                       </div>
@@ -67,7 +69,8 @@
                     </label>
                   </div>
                   <div class="o-form-element u-center-block">
-                    <button class="c-button c-button--info u-center-block__content u-center-block__content--horizontal">
+                    <button id="apply-filter"
+                            class="c-button c-button--info u-center-block__content u-center-block__content--horizontal">
                       Apply filter
                     </button>
                   </div>
@@ -77,11 +80,15 @@
           </div>
         </div>
         <div class="c-tabs__tab">
-          <form action="">
+          <div>
+            It shows 10 nearest parking
+          </div>
+          <form>
             <fieldset class="o-fieldset">
               <div class="o-form-element">
                 <label class="c-label" for="no_parking_size">No parking area size</label>
-                <input type="number" id="no_parking_size" placeholder="Size in km" class="c-field" value="4" min="1">
+                <input type="number" id="no_parking_size" placeholder="Size in metres" class="c-field"
+                       value="1000" min="100" max="10000" step="100">
                 <div class="c-hint">Minimum size is 1 km.</div>
               </div>
               <div class="o-form-element u-center-block">
