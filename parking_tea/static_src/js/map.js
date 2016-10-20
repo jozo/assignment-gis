@@ -41,6 +41,8 @@ $(document).ready(function () {
     function find_parking(latlng) {
         toastr["info"]("Area size: " + filter_area_size + ", capacity: " + filter_min_capacity
                         + ", only free: " + filter_only_free);
+        $('#loading-icon').css('visibility', 'visible');
+
         var data = {
             filter_area_size: filter_area_size,
             filter_min_capacity: filter_min_capacity,
@@ -52,13 +54,14 @@ $(document).ready(function () {
                 parking_geojson.push(createMarkerFrom(value, index + 1))
             });
             parking_layer.setGeoJSON(parking_geojson);
+            $('#loading-icon').css('visibility', 'hidden');
         })
     }
 
     // Default filter
-    var filter_area_size = 1000;        // metres
-    var filter_min_capacity = 0;        // unlimited
-    var filter_only_free = false;
+    var filter_area_size = $("#filter_area_size").val();            // metres
+    var filter_min_capacity = $("#filter_min_capacity").val();      // unlimited
+    var filter_only_free = $("#filter_only_free").is(':checked');
 
     $("#apply-filter").on('click', function (e) {
         e.preventDefault();
