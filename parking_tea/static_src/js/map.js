@@ -22,7 +22,7 @@ $(document).ready(function () {
             type: 'Feature',
             geometry: {
                 type: 'Point',
-                coordinates: JSON.parse(result[2]).coordinates
+                coordinates: JSON.parse(result[1]).coordinates
             },
             properties: {
                 'marker-symbol': number.toString()
@@ -32,6 +32,7 @@ $(document).ready(function () {
 
     map.on('click', function (e) {
         markerTarget.setLatLng(e.latlng);
+        parking_layer.setGeoJSON([]);
         map.panTo(e.latlng);
         $.getJSON("/api/v1/parking/" + e.latlng.lng + "/" + e.latlng.lat + "/", function (result) {
             parking_geojson = [];
