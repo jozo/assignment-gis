@@ -29,10 +29,26 @@ var logErrorHandler = function (err) {
 };
 
 // JavaScript - concat, minify
+// gulp.task('scripts', function() {
+//     return gulp.src(mainBowerFiles('**/*.js'))
+//         .pipe(p.plumber({ errorHandler: logErrorHandler }))
+//         .pipe(p.addSrc(dir.source + '/js/**/*.js'))
+//         .pipe(p.concat('bundle.js'))
+//         .pipe(p.minify({
+//             compress: {'drop_console': true},
+//             noSource: true,
+//             ext: {
+//                 min: '.min.js'
+//             }
+//         }))
+//         .pipe(gulp.dest(dir.build));
+// });
+
+// JavaScript - concat, minify
 gulp.task('scripts', function() {
-    return gulp.src(mainBowerFiles('**/*.js'))
+    return gulp.src(dir.source + '/js/**/*.js')
         .pipe(p.plumber({ errorHandler: logErrorHandler }))
-        .pipe(p.addSrc(dir.source + '/js/**/*.js'))
+        // .pipe(p.addSrc(dir.source + '/js/**/*.js'))
         .pipe(p.concat('bundle.js'))
         .pipe(p.minify({
             compress: {'drop_console': true},
@@ -45,11 +61,30 @@ gulp.task('scripts', function() {
 });
 
 // CSS - concat, minify, sass, autoprefix, sourcemaps
+// gulp.task('styles', function() {
+//     return gulp.src(mainBowerFiles('**/*.css'))
+//         .pipe(p.plumber({ errorHandler: logErrorHandler }))
+//         .pipe(p.addSrc(dir.temp + '/css/*'))
+//         .pipe(p.addSrc(dir.source + '/sass/*.scss'))
+//         .pipe(p.order(['bower_components/**/*', '*.*', 'main.scss'], {base: '.'}))
+//         .pipe(p.sourcemaps.init())
+//         .pipe(p.concat('bundle.min.scss'))
+//         .pipe(p.sass.sync({outputStyle: 'compressed'}).on('error', p.sass.logError))
+//         .pipe(p.autoprefixer({
+//             browsers: ['last 5 versions'],
+//             cascade: false
+//         }))
+//         .pipe(p.sourcemaps.write('./'))
+//         .pipe(gulp.dest(dir.build))
+//         .pipe(browserSync.reload({stream: true}));
+// });
+
+// CSS - concat, minify, sass, autoprefix, sourcemaps
 gulp.task('styles', function() {
-    return gulp.src(mainBowerFiles('**/*.css'))
+    return gulp.src(dir.source + '/sass/*.scss')
         .pipe(p.plumber({ errorHandler: logErrorHandler }))
         .pipe(p.addSrc(dir.temp + '/css/*'))
-        .pipe(p.addSrc(dir.source + '/sass/*.scss'))
+        // .pipe(p.addSrc(dir.source + '/sass/*.scss'))
         .pipe(p.order(['bower_components/**/*', '*.*', 'main.scss'], {base: '.'}))
         .pipe(p.sourcemaps.init())
         .pipe(p.concat('bundle.min.scss'))
