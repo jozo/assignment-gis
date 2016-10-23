@@ -41,3 +41,25 @@ Use cases
 3. User chooses "Apply"
 4. System finds nearest bus stop to the selected point
 5. System finds parking that are outside the "no go" area and have correct bus stop near it. Correct bus stop is one with at least one mutual bus number as the target bus stop.
+
+TODO
+----
+- [ ] Problem s posunutym kruhom, ktory ukazuje "no go zona"
+- [x] Dizajn parkovist - zmena farby ikonky
+- [x] Popup nad markerom ked sa nad neho prejde mysou - nazov, tagy, kapacita (staci pocitat cez js)
+- [ ] Vlastny, krajsi podklad mapy s zvyraznenymi parkoviskami
+- [x] Pri query pridat stlpec ci je to point alebo polygon
+- [ ] Pri park and ride pridat vyhladavanie aj bodov
+- [ ] Pridat indexy
+
+JSON content
+------------
+```
+{
+    type: point|polygon,
+    name: string,
+    coordinates: [float, float],
+    tags: { key => word },
+    distance: float
+}
+```

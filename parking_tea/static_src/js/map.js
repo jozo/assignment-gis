@@ -4,7 +4,7 @@ $(document).ready(function () {
     var map = L.mapbox.map('map', 'mapbox.streets').setView([48.1555, 17.1066], 15);
 
     // Map settings
-    $('.leaflet-container').css('cursor', 'copy');
+    // $('.leaflet-container').css('cursor', 'copy');
     map.zoomControl.setPosition('topright');
     var parking_geojson = [];
     var parking_layer = L.mapbox.featureLayer().setGeoJSON(parking_geojson).addTo(map);
@@ -20,22 +20,37 @@ $(document).ready(function () {
 
     var noGoAreaCircle = L.circle([48.1555, 17.1066], 0).addTo(map);
 
-    map.on('click', function (e) {
-        markerTarget.setLatLng(e.latlng);
-        parking_layer.setGeoJSON([]);
-        map.panTo(e.latlng);
-        find_parking(e.latlng)
-    });
+    // map.on('click', function (e) {
+    //     markerTarget.setLatLng(e.latlng);
+    //     parking_layer.setGeoJSON([]);
+    //     map.panTo(e.latlng);
+    //     find_parking(e.latlng)
+    // });
+
+    function createTitleFrom(result) {
+        var title = [];
+        title.push('<strong>Type: </strong>' + result.type + '<br>');
+        title.push('<strong>Name: </strong>' + result.name + '<br>');
+        title.push('<strong>Coordinates: </strong>' + JSON.parse(result.coordinates).coordinates + '<br>');
+        title.push('<strong>Fee: </strong>' + (result.tags['fee'] ? result.tags['fee'] : '?') + '<br>');
+        title.push('<strong>Area: </strong>' + result.area + ' m<sup>2</sup><br>');
+        title.push('<strong>Capacity: </strong>' + (result.type == 'point' ? 0 : result.area / 15).toFixed() + '<br>');
+        title.push('<strong>Tags: </strong>' + JSON.stringify(result.tags) + '<br>');
+        title.push('<strong>Distance from start: </strong>' + result.distance.toFixed(2) + ' m');
+        return title.join(' ');
+    }
 
     function createMarkerFrom(result, number) {
         return {
             type: 'Feature',
             geometry: {
                 type: 'Point',
-                coordinates: JSON.parse(result[1]).coordinates
+                coordinates: JSON.parse(result.coordinates).coordinates
             },
             properties: {
-                'marker-symbol': number.toString()
+                'marker-symbol': number.toString(),
+                'marker-color': '#8cc63e',
+                'title': createTitleFrom(result)
             }
         }
     }

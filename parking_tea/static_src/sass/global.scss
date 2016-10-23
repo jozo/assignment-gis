@@ -22,3 +22,5 @@ html, body {
 .clearer { clear: both; }
 
 #loading-icon { visibility: hidden; margin-left: 50px; color: $c-primary; }
+
+.leaflet-popup-content .marker-title { word-wrap: break-word; font-weight: normal; }

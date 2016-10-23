@@ -29,7 +29,17 @@ def parking(lng, lat):
     cursor = con.cursor()
     cursor.execute(query)
     rows = cursor.fetchall()
-    return json.dumps(rows)
+    places = []
+    for row in rows:
+        places.append({
+            'type': row.type,
+            'name': '?' if row.name is None else row.name,
+            'distance': row.st_distance,
+            'coordinates': row.st_asgeojson,
+            'area': row.area,
+            'tags': row.tags
+        })
+    return json.dumps(places)
 
 
 @app.route('/api/v1/park_and_ride/<float:lng>/<float:lat>/')

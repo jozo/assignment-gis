@@ -1,5 +1,8 @@
 SELECT
+  'polygon' as type,
   pol.name,
+  pol.tags,
+  pol.way_area as area,
   st_asgeojson(st_transform(st_centroid(pol.way), 4326)),
   st_distance(
       st_transform(ST_GeomFromText('POINT({{ longitude }} {{ latitude }})', 4326), 3857),
@@ -13,14 +16,17 @@ WHERE amenity = 'parking'
       AND pol.tags->'fee' = 'no'
       {% endif %}
       {% if capacity %}
-      AND trunc(pol.way_area / 12) >= {{ capacity }}
+      AND trunc(pol.way_area / 15) >= {{ capacity }}
 {% endif %}
 
 {% if not capacity %}
 UNION ALL
 
 SELECT
+  'point' as type,
   p.name,
+  p.tags,
+  0 as area,
   st_asgeojson(st_transform(p.way, 4326)),
   st_distance(
       st_transform(ST_GeomFromText('POINT({{ longitude }} {{ latitude }})', 4326), 3857),
