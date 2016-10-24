@@ -20,12 +20,12 @@ $(document).ready(function () {
 
     var noGoAreaCircle = L.circle([48.1555, 17.1066], 0).addTo(map);
 
-    // map.on('click', function (e) {
-    //     markerTarget.setLatLng(e.latlng);
-    //     parking_layer.setGeoJSON([]);
-    //     map.panTo(e.latlng);
-    //     find_parking(e.latlng)
-    // });
+    map.on('contextmenu', function (e) {
+        markerTarget.setLatLng(e.latlng);
+        parking_layer.setGeoJSON([]);
+        map.panTo(e.latlng);
+        find_parking(e.latlng)
+    });
 
     function createTitleFrom(result) {
         var title = [];
