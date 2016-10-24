@@ -1,30 +1,55 @@
 WITH other_stops AS (
-	WITH near_stop AS (
-		select name from osm_point
-		where public_transport = 'stop_position'
-		and operator = 'DPB'
-		order by st_distance(
-			  st_transform(ST_GeomFromText('POINT({{ longitude }} {{ latitude }})', 4326), 3857),
-			  st_transform(way, 3857))
-		limit 1
+  WITH near_stop AS (
+    SELECT name FROM osm_point  {# Vyberie najblizsiu zastavku k nasmu cielu #}
+    WHERE public_transport = 'stop_position'
+    AND operator = 'DPB'
+    ORDER BY ST_Distance(
+      ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
+      ST_Transform(way, 4326)::geography)
+    LIMIT 1
 	)
-	select distinct on (mhd.target) mhd.target, osm_point.way from mhd
-	join near_stop on mhd.start = near_stop.name
-	join osm_point on mhd.target = osm_point.name
-		and public_transport = 'stop_position'
-		and operator = 'DPB'
+	SELECT distinct ON (mhd.target) mhd.target, osm_point.way FROM mhd  {# Vyberie vsetky zastavky z ktorych sa da #}
+	JOIN near_stop ON mhd.start = near_stop.name                        {# dostat do cielovej zastavky #}
+	JOIN osm_point ON mhd.target = osm_point.name
+		AND public_transport = 'stop_position'
+		AND operator = 'DPB'
 )
-select distinct on (st_distance, osm_id)
+
+SELECT DISTINCT ON (ST_Distance, osm_id)
+  'polygon' as type,
+  pol.name,
   pol.tags,
-  st_asgeojson(st_transform(st_centroid(pol.way), 4326)),
-  st_distance(
-	  st_transform(ST_GeomFromText('POINT({{ longitude }} {{ latitude }})', 4326), 3857),
-	  st_transform(st_centroid(pol.way), 3857))
-from osm_polygon pol
-join other_stops on ST_DWithin(pol.way, other_stops.way, 500)
-where pol.amenity = 'parking'
-and {{ no_go_area }} < st_distance(
-	st_transform(ST_GeomFromText('POINT({{ longitude }} {{ latitude }})', 4326), 3857),
-	st_transform(st_centroid(pol.way), 3857))
-order by st_distance
-limit 50
+  pol.way_area as area,
+  ST_AsGeoJSON(ST_Transform(ST_Centroid(pol.way), 4326)),
+  ST_Distance(
+	  ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
+	  ST_Transform(ST_Centroid(pol.way), 4326)::geography),
+  other_stops.target as bus_stop
+FROM osm_polygon pol
+JOIN other_stops ON ST_DWithin(pol.way, other_stops.way, 500)
+WHERE pol.amenity = 'parking'
+AND {{ no_go_area }} < ST_Distance(
+	ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
+	ST_Transform(pol.way, 4326)::geography)
+
+UNION ALL
+
+SELECT DISTINCT ON (ST_Distance, osm_id)
+  'point' as type,
+  p.name,
+  p.tags,
+  0 as area,
+  ST_AsGeoJSON(ST_Transform(p.way, 4326)),
+  ST_Distance(
+	  ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
+	  ST_Transform(p.way, 4326)::geography),
+  other_stops.target as bus_stop
+FROM osm_point p
+JOIN other_stops ON ST_DWithin(p.way, other_stops.way, 500)
+WHERE p.amenity = 'parking'
+AND {{ no_go_area }} < ST_Distance(
+	ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
+	ST_Transform(p.way, 4326)::geography)
+
+ORDER BY ST_Distance
+LIMIT 50

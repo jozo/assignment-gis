@@ -37,7 +37,7 @@ def parking(lng, lat):
             'distance': row.st_distance,
             'coordinates': row.st_asgeojson,
             'area': row.area,
-            'tags': row.tags
+            'tags': row.tags,
         })
     return json.dumps(places)
 
@@ -49,4 +49,15 @@ def park_and_ride(lng, lat):
     cursor = con.cursor()
     cursor.execute(query)
     rows = cursor.fetchall()
-    return json.dumps(rows)
+    places = []
+    for row in rows:
+        places.append({
+            'type': row.type,
+            'name': '?' if row.name is None else row.name,
+            'distance': row.st_distance,
+            'coordinates': row.st_asgeojson,
+            'area': row.area,
+            'tags': row.tags,
+            'bus_stop': row.bus_stop,
+        })
+    return json.dumps(places)

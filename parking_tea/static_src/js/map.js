@@ -36,7 +36,10 @@ $(document).ready(function () {
         title.push('<strong>Area: </strong>' + result.area + ' m<sup>2</sup><br>');
         title.push('<strong>Capacity: </strong>' + (result.type == 'point' ? 0 : result.area / 15).toFixed() + '<br>');
         title.push('<strong>Tags: </strong>' + JSON.stringify(result.tags) + '<br>');
-        title.push('<strong>Distance from start: </strong>' + result.distance.toFixed(2) + ' m');
+        title.push('<strong>Distance from start: </strong>' + result.distance.toFixed(2) + ' m<br>');
+        if (result.bus_stop) {
+            title.push('<strong>Bus stop: </strong>' + result.bus_stop);
+        }
         return title.join(' ');
     }
 

@@ -44,12 +44,12 @@ Use cases
 
 TODO
 ----
-- [ ] Problem s posunutym kruhom, ktory ukazuje "no go zona"
+- [x] Problem s posunutym kruhom, ktory ukazuje "no go zona"
 - [x] Dizajn parkovist - zmena farby ikonky
 - [x] Popup nad markerom ked sa nad neho prejde mysou - nazov, tagy, kapacita (staci pocitat cez js)
 - [ ] Vlastny, krajsi podklad mapy s zvyraznenymi parkoviskami
 - [x] Pri query pridat stlpec ci je to point alebo polygon
-- [ ] Pri park and ride pridat vyhladavanie aj bodov
+- [x] Pri park and ride pridat vyhladavanie aj bodov
 - [ ] Pridat indexy
 
 JSON content
