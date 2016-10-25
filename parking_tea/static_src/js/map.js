@@ -61,7 +61,7 @@ $(document).ready(function () {
 
     function find_parking(latlng) {
         toastr["info"]("Area size: " + filter_area_size + ", capacity: " + filter_min_capacity
-                        + ", only free: " + filter_only_free);
+            + ", only free: " + filter_only_free);
         $('#loading-icon').css('visibility', 'visible');
         noGoAreaCircle.setRadius(0);
 
@@ -98,7 +98,7 @@ $(document).ready(function () {
         $('#loading-icon').css('visibility', 'visible');
         noGoAreaCircle.setLatLng(latlng);
         noGoAreaCircle.setRadius(filter_no_go_area);
-        var data = { filter_no_go_area: filter_no_go_area };
+        var data = {filter_no_go_area: filter_no_go_area};
 
         $.getJSON("/api/v1/park_and_ride/" + latlng.lng + "/" + latlng.lat + "/", data, function (result) {
             parking_geojson = [];
@@ -114,5 +114,13 @@ $(document).ready(function () {
         e.preventDefault();
         filter_no_go_area = $("#filter_no_go_area").val();
         find_park_and_ride(markerTarget.getLatLng());
+    });
+
+    // Ask for current position and move to it
+    navigator.geolocation.getCurrentPosition(function (location) {
+        var latlng = L.latLng(location.coords.latitude, location.coords.longitude);
+        markerTarget.setLatLng(latlng);
+        map.panTo(latlng);
+        find_parking(latlng);
     });
 });

@@ -51,7 +51,7 @@ TODO
 - [x] Pri query pridat stlpec ci je to point alebo polygon
 - [x] Pri park and ride pridat vyhladavanie aj bodov
 - [ ] Pridat indexy
-- [ ] Pridat najdenie tvojej polohy
+- [x] Pridat najdenie tvojej polohy
 
 JSON content
 ------------
