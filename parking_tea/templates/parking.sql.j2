@@ -5,19 +5,19 @@ SELECT
   pol.way_area as area,
   ST_AsGeoJSON(ST_Transform(ST_Centroid(pol.way), 4326)),
   ST_Distance(
-      ST_Transform(ST_GeomFromText('POINT({{ longitude }} {{ latitude }})', 4326), 3857),
-      ST_Transform(ST_Centroid(pol.way), 3857))
+      ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
+	    ST_Transform(pol.way, 4326)::geography)
 FROM osm_polygon pol
 WHERE amenity = 'parking'
       AND {{ area_size }} > ST_Distance(
-          ST_Transform(ST_GeomFromText('POINT({{ longitude }} {{ latitude }})', 4326), 3857),
-          ST_Transform(ST_Centroid(pol.way), 3857))
+          ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
+          ST_Transform(pol.way, 4326)::geography)
       {% if fee %}
       AND pol.tags->'fee' = 'no'
       {% endif %}
       {% if capacity %}
       AND trunc(pol.way_area / 15) >= {{ capacity }}
-{% endif %}
+      {% endif %}
 
 {% if not capacity %}
 UNION ALL
@@ -29,13 +29,13 @@ SELECT
   0 as area,
   ST_AsGeoJSON(ST_Transform(p.way, 4326)),
   ST_Distance(
-      ST_Transform(ST_GeomFromText('POINT({{ longitude }} {{ latitude }})', 4326), 3857),
-      ST_Transform(p.way, 3857))
+      ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
+	    ST_Transform(p.way, 4326)::geography)
 FROM osm_point p
 WHERE amenity = 'parking'
       AND {{ area_size }} > ST_Distance(
-          ST_Transform(ST_GeomFromText('POINT({{ longitude }} {{ latitude }})', 4326), 3857),
-          ST_Transform(p.way, 3857))
+          ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
+	        ST_Transform(p.way, 4326)::geography)
       {% if fee %}
       AND p.tags->'fee' = 'no'
       {% endif %}

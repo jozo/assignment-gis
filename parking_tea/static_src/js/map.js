@@ -2,6 +2,7 @@ $(document).ready(function () {
     // Map initialization
     L.mapbox.accessToken = 'pk.eyJ1IjoiYmxvd2Zpc2h0ZWEiLCJhIjoiY2l1NXd4ejhxMDAxbzJvczRpY283NjE0NiJ9.9Ozoh5tAqRJPZUpjUFhfYw';
     var map = L.mapbox.map('map', 'mapbox.streets').setView([48.1555, 17.1066], 15);
+    // var styleLayer = L.mapbox.styleLayer('mapbox://styles/blowfishtea/ciuonni2k00kj2iqqxva0rn75').addTo(map);
 
     // Map settings
     // $('.leaflet-container').css('cursor', 'copy');
