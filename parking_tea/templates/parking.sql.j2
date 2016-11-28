@@ -1,12 +1,11 @@
 SELECT
-  'polygon' as type,
   pol.name,
   pol.tags,
-  pol.way_area as area,
+  pol.way_area AS area,
   ST_AsGeoJSON(ST_Transform(ST_Centroid(pol.way), 4326)),
   ST_Distance(
       ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
-	    ST_Transform(pol.way, 4326)::geography)
+	    ST_Transform(pol.way, 4326)::geography) AS distance
 FROM osm_polygon pol
 WHERE amenity = 'parking'
       AND {{ area_size }} > ST_Distance(
@@ -23,14 +22,13 @@ WHERE amenity = 'parking'
 UNION ALL
 
 SELECT
-  'point' as type,
   p.name,
   p.tags,
-  0 as area,
+  0 AS area,
   ST_AsGeoJSON(ST_Transform(p.way, 4326)),
   ST_Distance(
       ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
-	    ST_Transform(p.way, 4326)::geography)
+	    ST_Transform(p.way, 4326)::geography) AS distance
 FROM osm_point p
 WHERE amenity = 'parking'
       AND {{ area_size }} > ST_Distance(
@@ -40,4 +38,4 @@ WHERE amenity = 'parking'
       AND p.tags->'fee' = 'no'
       {% endif %}
 {% endif %}
-order by ST_Distance
+ORDER BY distance

@@ -1,56 +1,55 @@
 WITH selected_stops AS (
-SELECT DISTINCT ON (stops.end_name) stops.end_name, stops.dur, stops.trans, osm_point.way from (
-with recursive path(hop, duration, line, start_stop_id, end_stop_id, start_name, end_name, route, transfers) as (
-	select 1, 0, c.line, c.start_stop_id, c.end_stop_id, ss.name, es.name, array[ss.name, es.name], array[c.line]
-	from connections c
-	join stops ss on ss.id = c.start_stop_id
-	join stops es on es.id = c.end_stop_id
-	where ss.name = '{{ stop_name }}'
-	and c.line not like 'N%'
+SELECT DISTINCT ON (stops.end_name) stops.end_name, stops.dur, stops.trans, osm_point.way FROM (
+WITH RECURSIVE path(hop, duration, line, start_stop_id, end_stop_id, start_name, end_name, route, transfers) as (
+	SELECT 1, 0, c.line, c.start_stop_id, c.end_stop_id, ss.name, es.name, array[ss.name, es.name], array[c.line]
+	FROM connections c
+	JOIN stops ss ON ss.id = c.start_stop_id
+	JOIN stops es ON es.id = c.end_stop_id
+	WHERE ss.name = '{{ stop_name }}'
+	AND c.line not like 'N%'
 
-	union
+	UNION
 
-	select p.hop + 1, p.duration + c.duration, c.line, c.start_stop_id, c.end_stop_id, ss.name, es.name, p.route || es.name,
-			case when c.line = any(p.transfers)
-				then p.transfers
-				else p.transfers || c.line
-			end
-	from path p
-	join connections c on p.end_stop_id = c.start_stop_id
-	join stops ss on ss.id = c.start_stop_id
-	join stops es on es.id = c.end_stop_id
+	SELECT p.hop + 1, p.duration + c.duration, c.line, c.start_stop_id, c.end_stop_id, ss.name, es.name, p.route || es.name,
+			CASE WHEN c.line = any(p.transfers)
+				THEN p.transfers
+				ELSE p.transfers || c.line
+			END
+	FROM path p
+	JOIN connections c ON p.end_stop_id = c.start_stop_id
+	JOIN stops ss ON ss.id = c.start_stop_id
+	JOIN stops es ON es.id = c.end_stop_id
 
-	where not es.name = any(p.route)
-	and p.line = c.line or not c.line = any(p.transfers)
-	and es.name != '{{ stop_name }}'
-	and array_length(p.transfers, 1) < 2
-	and c.line not like 'N%'
+	WHERE not es.name = any(p.route)
+	AND p.line = c.line or not c.line = any(p.transfers)
+	AND es.name != '{{ stop_name }}'
+	AND array_length(p.transfers, 1) < 2
+	AND c.line not like 'N%'
 )
-select p.end_name, min(p.route) as routes, min(p.duration) as dur, min(p.transfers) as trans from path p
-where p.duration < 30
-group by p.end_name
-order by dur
-) as stops
+SELECT p.end_name, min(p.route) as routes, min(p.duration) as dur, min(p.transfers) as trans FROM path p
+WHERE p.duration < 30
+GROUP BY p.end_name
+ORDER BY dur
+) AS stops
 JOIN osm_point ON stops.end_name = osm_point.name
 		AND osm_point.public_transport = 'stop_position'
 		AND osm_point.operator = 'DPB'
 )
 
-SELECT DISTINCT ON (ST_Distance, osm_id)
-  'polygon' as type,
+SELECT DISTINCT ON (distance, osm_id)
   pol.name,
   pol.tags,
-  pol.way_area as area,
+  pol.way_area AS area,
   ST_AsGeoJSON(ST_Transform(ST_Centroid(pol.way), 4326)),
   ST_Distance(
 	  ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
-	  ST_Transform(ST_Centroid(pol.way), 4326)::geography),
-  selected_stops.end_name as bus_stop,
-  selected_stops.dur,
-  array_to_json(selected_stops.trans) as transfers
+	  ST_Transform(ST_Centroid(pol.way), 4326)::geography) AS distance,
+  selected_stops.end_name AS bus_stop,
+  selected_stops.dur AS duration,
+  array_to_json(selected_stops.trans) AS transfers
 FROM osm_polygon pol
 JOIN selected_stops ON ST_DWithin(pol.way, selected_stops.way, 500)
 WHERE pol.amenity = 'parking'
 AND pol.way_area > 4000
-ORDER BY ST_Distance
+ORDER BY distance
 LIMIT 20

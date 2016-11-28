@@ -10,18 +10,18 @@ Build a map-based application, which lets the user see geo-based data on a map a
 
 - Showing nearby landmarks as colored circles, each type of landmark has different circle color and the more interesting the landmark is, the bigger the circle. Landmarks are sorted in a sidebar by distance to the user. It is possible to filter only certain landmark types (e.g., castles).
 
-- Showing bicykle roads on a map. The roads are color-coded based on the road difficulty. The user can see various lists which help her choose an appropriate road, e.g. roads that cross a river, roads that are nearby lakes, roads that pass through multiple countries, etc.
+- Showing bicycle roads on a map. The roads are color-coded based on the road difficulty. The user can see various lists which help her choose an appropriate road, e.g. roads that cross a river, roads that are nearby lakes, roads that pass through multiple countries, etc.
 
 ## Data sources
 
 - [Open Street Maps](https://www.openstreetmap.org/)
+- [Public transport in Bratislava](https://github.com/fiit-pdt/hands-on/tree/2016/5-recursive-sql)
 
 ## My project
 
-Fill in (either in English, or in Slovak):
+**Application description**: Application finds nearest parking in your location. It also shows how you can use public
+transport to park & ride to your target location.
 
-**Application description**: `<fill in>`
+**Data source**: Open Street Maps, Public transport in Bratislava
 
-**Data source**: `<fill in>`
-
-**Technologies used**: `<fill in>`
+**Technologies used**: Flask, jQuery, Gulp, Sass
