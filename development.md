@@ -1,16 +1,38 @@
 Parking tea
 ===========
 
+To start working on project
+---------------------------
+1. Create virtualenv
+2. `sudo apt install libpq-dev`
+3. `pip install -r requirements.txt`
+4. Import the data
+
 Import data to Postgres
 -----------------------
+1. Install osm2pgsql `sudo apt install osm2pgsql`
+2. Download *slovakia.osm.pbf* from http://www.freemap.sk/
+3. Run docker with PostgreSQL + Postgis `docker run -d --name postgis -p 65432:5432 -v "$PWD/.postgres_data":/var/lib/postgresql kartoza/postgis`
+4. Login to postgres via pgadmin. Otherwise osm2pgsql will show error when it tries to connect to PostgreSQL.
+4. Import data with `osm2pgsql -s -c --hstore --hstore-add-index -d gis -U docker -H localhost -P 65432 data/slovakia.osm.pbf`
+
+**Old way:**
+
 1. Install Postgis
 2. Create database and add postgis extension to it (fuzzystrmatch, postgis, postgis_tiger_geocoder, postgis_topology)
 3. Import shapefile `shp2pgsql -W "latin1" data/bratislava/bratislava_osm_point.shp public.point | psql -h localhost -p 65432 -d gis -U docker`
 4. Or import OSM/PBF `osm2pgsql -s -c --hstore --hstore-add-index -d gis -U docker -H localhost -P 65432 data/slovakia.osm.pbf`
 
-**Data to download:** https://mapzen.com/data/metro-extracts/metro/bratislava_slovakia/
+Data to download: https://mapzen.com/data/metro-extracts/metro/bratislava_slovakia/
 
+**Run docker with PostgreSQL and Postgis:**
 `docker run -d --name postgis -p 65432:5432 -v "$PWD/.postgres_data":/var/lib/postgresql kartoza/postgis`
+
+
+MHD to other db
+---------------
+pg_dump -h localhost -p 5432 -d pdt -U postgres -t stops > data/stops.sql
+psql -h localhost -p 65432 -d gis -U docker < data/stops.sql
 
 About OpenStreetMap data
 ------------------------

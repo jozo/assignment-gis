@@ -28,18 +28,34 @@ $(document).ready(function () {
         find_parking(e.latlng)
     });
 
-    function createTitleFrom(result) {
+    function createTitleFrom(result, number) {
         var title = [];
-        title.push('<strong>Type: </strong>' + result.type + '<br>');
-        title.push('<strong>Name: </strong>' + result.name + '<br>');
-        title.push('<strong>Coordinates: </strong>' + JSON.parse(result.coordinates).coordinates + '<br>');
-        title.push('<strong>Fee: </strong>' + (result.tags['fee'] ? result.tags['fee'] : '?') + '<br>');
-        title.push('<strong>Area: </strong>' + result.area + ' m<sup>2</sup><br>');
-        title.push('<strong>Capacity: </strong>' + (result.type == 'point' ? 0 : result.area / 15).toFixed() + '<br>');
-        title.push('<strong>Tags: </strong>' + JSON.stringify(result.tags) + '<br>');
-        title.push('<strong>Distance from start: </strong>' + result.distance.toFixed(2) + ' m<br>');
+        var fee = result.tags['fee'] ? result.tags['fee'] : 'unknown';
+        if (result.name !== "") {
+            title.push('<h1>' + result.name + '</h1>');
+        } else {
+            title.push('<h1> Parking #' + number + '</h1>');
+        }
+        title.push('<div class="popup-icon">');
+        title.push('<i class="fa fa-eur" title="' + fee + '" aria-hidden="true"></i>');
+        title.push('<i class="fa fa-map-marker" title="' + JSON.parse(result.coordinates).coordinates + '" aria-hidden="true"></i>');
+        title.push('<i class="fa fa-globe" title="Area: ' + result.area + ' m2" aria-hidden="true"></i>');
+        title.push('<i class="fa fa-tags" title=\'' + JSON.stringify(result.tags) + '\' aria-hidden="true"></i>');
+        title.push('<i class="fa fa-plane" title="' + result.distance.toFixed(2) + ' m" aria-hidden="true"></i>');
+        title.push('</div>');
+        title.push('<strong>Capacity: </strong>' + (result.type == 'point' ? 0 : result.area / 15).toFixed() + ' cars<br>');
         if (result.bus_stop) {
-            title.push('<strong>Bus stop: </strong>' + result.bus_stop);
+            title.push('<h2>MHD connections</h2>');
+            title.push('<div class="buses">');
+            title.push('<i class="fa fa-bus" aria-hidden="true"></i>');
+            title.push('<strong>' + result.bus_stop + ' <i class="fa fa-angle-double-right" aria-hidden="true"></i></strong>');
+            title.push('<i class="fa fa-bus" aria-hidden="true"></i> <strong>' + result.bus_stop_start + '</strong>');
+            title.push('&nbsp;&nbsp;<i class="fa fa-clock-o" aria-hidden="true"></i> ' + result.duration + ' min');
+            title.push('</div>');
+            title.push('<div>');
+            title.push('<div></div>');
+            title.push('<div><strong>Bus: </strong>' + JSON.stringify(result.transfers.toString()) + '</div>');
+            title.push('</div>');
         }
         return title.join(' ');
     }
@@ -54,7 +70,7 @@ $(document).ready(function () {
             properties: {
                 'marker-symbol': number.toString(),
                 'marker-color': '#8cc63e',
-                'title': createTitleFrom(result)
+                'title': createTitleFrom(result, number)
             }
         }
     }
@@ -96,8 +112,8 @@ $(document).ready(function () {
 
     function find_park_and_ride(latlng) {
         $('#loading-icon').css('visibility', 'visible');
-        noGoAreaCircle.setLatLng(latlng);
-        noGoAreaCircle.setRadius(filter_no_go_area);
+        // noGoAreaCircle.setLatLng(latlng);
+        // noGoAreaCircle.setRadius(filter_no_go_area);
         var data = {filter_no_go_area: filter_no_go_area};
 
         $.getJSON("/api/v1/park_and_ride/" + latlng.lng + "/" + latlng.lat + "/", data, function (result) {

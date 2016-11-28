@@ -1,18 +1,39 @@
-WITH other_stops AS (
-  WITH near_stop AS (
-    SELECT name FROM osm_point  {# Vyberie najblizsiu zastavku k nasmu cielu #}
-    WHERE public_transport = 'stop_position'
-    AND operator = 'DPB'
-    ORDER BY ST_Distance(
-      ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
-      ST_Transform(way, 4326)::geography)
-    LIMIT 1
-	)
-	SELECT distinct ON (mhd.target) mhd.target, osm_point.way FROM mhd  {# Vyberie vsetky zastavky z ktorych sa da #}
-	JOIN near_stop ON mhd.start = near_stop.name                        {# dostat do cielovej zastavky #}
-	JOIN osm_point ON mhd.target = osm_point.name
-		AND public_transport = 'stop_position'
-		AND operator = 'DPB'
+WITH selected_stops AS (
+SELECT DISTINCT ON (stops.end_name) stops.end_name, stops.dur, stops.trans, osm_point.way from (
+with recursive path(hop, duration, line, start_stop_id, end_stop_id, start_name, end_name, route, transfers) as (
+	select 1, 0, c.line, c.start_stop_id, c.end_stop_id, ss.name, es.name, array[ss.name, es.name], array[c.line]
+	from connections c
+	join stops ss on ss.id = c.start_stop_id
+	join stops es on es.id = c.end_stop_id
+	where ss.name = '{{ stop_name }}'
+	and c.line not like 'N%'
+
+	union
+
+	select p.hop + 1, p.duration + c.duration, c.line, c.start_stop_id, c.end_stop_id, ss.name, es.name, p.route || es.name,
+			case when c.line = any(p.transfers)
+				then p.transfers
+				else p.transfers || c.line
+			end
+	from path p
+	join connections c on p.end_stop_id = c.start_stop_id
+	join stops ss on ss.id = c.start_stop_id
+	join stops es on es.id = c.end_stop_id
+
+	where not es.name = any(p.route)
+	and p.line = c.line or not c.line = any(p.transfers)
+	and es.name != '{{ stop_name }}'
+	and array_length(p.transfers, 1) < 2
+	and c.line not like 'N%'
+)
+select p.end_name, min(p.route) as routes, min(p.duration) as dur, min(p.transfers) as trans from path p
+where p.duration < 30
+group by p.end_name
+order by dur
+) as stops
+JOIN osm_point ON stops.end_name = osm_point.name
+		AND osm_point.public_transport = 'stop_position'
+		AND osm_point.operator = 'DPB'
 )
 
 SELECT DISTINCT ON (ST_Distance, osm_id)
@@ -24,32 +45,12 @@ SELECT DISTINCT ON (ST_Distance, osm_id)
   ST_Distance(
 	  ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
 	  ST_Transform(ST_Centroid(pol.way), 4326)::geography),
-  other_stops.target as bus_stop
+  selected_stops.end_name as bus_stop,
+  selected_stops.dur,
+  array_to_json(selected_stops.trans) as transfers
 FROM osm_polygon pol
-JOIN other_stops ON ST_DWithin(pol.way, other_stops.way, 500)
+JOIN selected_stops ON ST_DWithin(pol.way, selected_stops.way, 500)
 WHERE pol.amenity = 'parking'
-AND {{ no_go_area }} < ST_Distance(
-	ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
-	ST_Transform(pol.way, 4326)::geography)
-
-UNION ALL
-
-SELECT DISTINCT ON (ST_Distance, osm_id)
-  'point' as type,
-  p.name,
-  p.tags,
-  0 as area,
-  ST_AsGeoJSON(ST_Transform(p.way, 4326)),
-  ST_Distance(
-	  ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
-	  ST_Transform(p.way, 4326)::geography),
-  other_stops.target as bus_stop
-FROM osm_point p
-JOIN other_stops ON ST_DWithin(p.way, other_stops.way, 500)
-WHERE p.amenity = 'parking'
-AND {{ no_go_area }} < ST_Distance(
-	ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
-	ST_Transform(p.way, 4326)::geography)
-
+AND pol.way_area > 4000
 ORDER BY ST_Distance
-LIMIT 50
+LIMIT 20

@@ -8,11 +8,9 @@
 
 # Overview
 
-This application shows hotels in Bratislava on a map. Most important features are:
-- search by proximity to my current location
-- search by hotel name
-- intelligent ordering - by proximity and by hotel features
-- hotels on the map are color coded by their quality assigned in stars (standard)
+This application shows parking in Bratislava on a map. Most important features are:
+- show parking around selected point on the map
+- park & ride - show you buses you can use to get to the target location from your parking
 
 This is it in action:
 

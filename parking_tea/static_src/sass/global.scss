@@ -22,7 +22,17 @@ html, body {
 }
 
 .clearer { clear: both; }
+.hidden { display: none; }
 
 #loading-icon { visibility: hidden; margin-left: 50px; color: $c-primary; }
 
-.leaflet-popup-content .marker-title { word-wrap: break-word; font-weight: normal; }
+.leaflet-popup-content .marker-title { min-width: 300px; word-wrap: break-word; font-weight: normal; font-size: 15px;
+  h1 { font-size: 25px; color: $c-primary; }
+  h2 { margin-top: 15px; margin-bottom: 5px; font-size: 20px; color: #4dabf5; }
+  .bus { font-size: 13px; text-align: center;
+    span { }
+  }
+  .buses { margin-bottom: 5px; }
+}
+
+.popup-icon { margin-bottom: 5px; font-size: 18px; color: gray; }

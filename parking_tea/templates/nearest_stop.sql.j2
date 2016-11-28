@@ -1,0 +1,7 @@
+SELECT name FROM osm_point
+WHERE public_transport = 'stop_position'
+AND operator = 'DPB'
+ORDER BY ST_Distance(
+    ST_GeogFromText('POINT({{ longitude }} {{ latitude }})'),
+    ST_Transform(way, 4326)::geography)
+LIMIT 1
