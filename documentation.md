@@ -31,7 +31,7 @@ Data about parking and bus stops is coming directly from Open Street Maps. I dow
 
 **Find nearest parking**
 
-`GET /api/v1/parking/17.106914520263675/48.14089063959608/?filter_area_size=500&filter_min_capacity=0&filter_only_free=false`
+`GET /api/v1/parking/17.106914520263675/48.14089063959608/?filter_only_free=false`
 
 **Find parking and buses**
 

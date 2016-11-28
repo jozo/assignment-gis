@@ -31,7 +31,7 @@ def build_json_from(rows, bus_stop_start=None):
             item['bus_stop_start'] = bus_stop_start,
             item['bus_stop_end'] = row.bus_stop,
             item['duration'] = row.duration,
-            item['transfers'] = row.transfers[0],
+            item['transfers'] = row.transfers,
         parking_places.append(item)
     return json.dumps(parking_places, indent=4, sort_keys=True, separators=(',', ': '))
 
