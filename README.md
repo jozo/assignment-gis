@@ -25,3 +25,8 @@ transport to park & ride to your target location.
 **Data source**: Open Street Maps, Public transport in Bratislava
 
 **Technologies used**: Flask, jQuery, Gulp, Sass
+
+
+This is it in action:
+
+![Screenshot](screenshot.png)
